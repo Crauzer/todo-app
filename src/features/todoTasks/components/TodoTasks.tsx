@@ -72,7 +72,7 @@ export const TodoTasks: React.FC<TodoTasksProps> = ({ todoId }) => {
   return (
     <div className="flex flex-col gap-2">
       <button
-        className="btn-primary btn w-fit"
+        className="btn-primary btn ml-auto w-fit"
         onClick={() => createTodoTaskDialogRef.current?.showModal()}
       >
         Create Task
