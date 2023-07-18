@@ -11,6 +11,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { optional, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
+import { TodoTasks } from "../../features/todoTasks/components/TodoTasks";
 
 export const todosLoader = (({ params: { todoId } }): Promise<Todo> => {
   if (!todoId) {
@@ -57,7 +58,7 @@ export const TodoRoute: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg bg-base-300 p-4">
+    <div className="flex flex-col gap-2 p-4 rounded-lg bg-base-300">
       {isRenaming ? (
         <form onSubmit={handleRenameSubmit(onRenameSubmit)}>
           <div className="flex flex-row items-center gap-1">
@@ -72,14 +73,14 @@ export const TodoRoute: React.FC = () => {
             <button
               type="submit"
               title="Rename"
-              className="btn-info btn-outline btn-sm btn ml-2 text-base"
+              className="ml-2 text-base btn-info btn-outline btn-sm btn"
             >
               <MdDriveFileRenameOutline />
             </button>
             <button
               type="button"
               title="Cancel"
-              className="btn-ghost btn-sm btn text-base"
+              className="text-base btn-ghost btn-sm btn"
               onClick={() => {
                 setIsRenaming(false);
                 resetRename({ name: todo.name });
@@ -95,13 +96,14 @@ export const TodoRoute: React.FC = () => {
       ) : (
         <div
           role="button"
-          className="btn-ghost btn max-w-screen-xl justify-start overflow-x-clip overflow-ellipsis text-4xl hover:rounded-lg hover:bg-base-100"
+          className="justify-start max-w-screen-xl text-4xl btn-ghost btn overflow-x-clip overflow-ellipsis hover:rounded-lg hover:bg-base-100"
           onClick={() => setIsRenaming(true)}
         >
           {todo.name}
         </div>
       )}
       <span className="text-lg">{dayjs.utc(todo.createdAt).format()}</span>
+      <TodoTasks todoId={todo.id}/>
     </div>
   );
 };
