@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDeleteTodoTask } from "../api/deleteTodoTask";
 import { todo } from "node:test";
+import { useUpdateTodoTask } from "../api/updateTodoTask";
 
 const createTodoTaskFormSchema = z.object({
   name: z.string().min(1, "Name needs to be at least 1 character long"),
@@ -146,6 +147,7 @@ const TodoTaskItem: React.FC<{ todoId: string; todoTask: TodoTask }> = ({
   todoTask,
 }) => {
   const deleteTodoTask = useDeleteTodoTask(todoId);
+  const updateTodoTask = useUpdateTodoTask(todoId);
 
   return (
     <div className="collapse-arrow join-item collapse border border-base-100">
@@ -158,8 +160,14 @@ const TodoTaskItem: React.FC<{ todoId: string; todoTask: TodoTask }> = ({
               <span className="label-text">Finished</span>
               <input
                 type="checkbox"
-                checked={todoTask.isFinished}
                 className="checkbox"
+                checked={todoTask.isFinished}
+                onChange={(event) =>
+                  updateTodoTask.mutate({
+                    ...todoTask,
+                    isFinished: event.target.checked,
+                  })
+                }
               />
             </label>
           </div>
