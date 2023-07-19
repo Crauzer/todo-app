@@ -8,8 +8,9 @@ import dayjs from "dayjs";
 import clsx from "clsx";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDeleteTodoTask } from "../api/deleteTodoTask";
-import { todo } from "node:test";
 import { useUpdateTodoTask } from "../api/updateTodoTask";
+import { useAtom } from "jotai";
+import { StateFilter, filterAtom } from "./TodoTasksFilter";
 
 const createTodoTaskFormSchema = z.object({
   name: z.string().min(1, "Name needs to be at least 1 character long"),
@@ -30,11 +31,27 @@ type TodoTasksProps = {
   todoId: string;
 };
 
+const doesTodoTaskMatchStateFilter = (
+  todoTask: TodoTask,
+  filter: StateFilter
+) => {
+  switch (filter) {
+    case "all":
+      return true;
+    case "active":
+      return !todoTask.isFinished;
+    case "finished":
+      return todoTask.isFinished;
+  }
+};
+
 export const TodoTasks: React.FC<TodoTasksProps> = ({ todoId }) => {
   const todoTasks = useTodoTasks(todoId);
   const createTodoTask = useCreateTodoTask(todoId);
 
   const createTodoTaskDialogRef = useRef<HTMLDialogElement>(null);
+
+  const [filter] = useAtom(filterAtom);
 
   const {
     register: registerCreateTodoTaskField,
@@ -134,9 +151,24 @@ export const TodoTasks: React.FC<TodoTasksProps> = ({ todoId }) => {
         </form>
       </dialog>
       <div className="join-vertical join w-full">
-        {todoTasks.data?.map((todoTask) => (
-          <TodoTaskItem key={todoTask.id} todoId={todoId} todoTask={todoTask} />
-        ))}
+        {todoTasks.data
+          ?.filter((todoTask) => {
+            if (filter.nameFilter) {
+              return (
+                todoTask.name.includes(filter.nameFilter) &&
+                doesTodoTaskMatchStateFilter(todoTask, filter.stateFilter)
+              );
+            }
+
+            return doesTodoTaskMatchStateFilter(todoTask, filter.stateFilter);
+          })
+          .map((todoTask) => (
+            <TodoTaskItem
+              key={todoTask.id}
+              todoId={todoId}
+              todoTask={todoTask}
+            />
+          ))}
       </div>
     </div>
   );

@@ -7,11 +7,13 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useUpdateTodo } from "../../features/todos/api/updateTodo";
 import { MdClear, MdDriveFileRenameOutline } from "react-icons/md";
-import dayjs, { Dayjs } from "dayjs";
-import { optional, z } from "zod";
+import dayjs from "dayjs";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import { TodoTasks } from "../../features/todoTasks/components/TodoTasks";
+import { Provider } from "jotai";
+import { TodoTasksFilter } from "../../features/todoTasks/components/TodoTasksFilter";
 
 export const todosLoader = (({ params: { todoId } }): Promise<Todo> => {
   if (!todoId) {
@@ -103,7 +105,10 @@ export const TodoRoute: React.FC = () => {
         </div>
       )}
       <span className="text-lg">{dayjs.utc(todo.createdAt).format()}</span>
-      <TodoTasks todoId={todo.id} />
+      <Provider>
+        <TodoTasksFilter />
+        <TodoTasks todoId={todo.id} />
+      </Provider>
     </div>
   );
 };
