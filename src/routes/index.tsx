@@ -1,4 +1,5 @@
 import {
+  Navigate,
   Route,
   createBrowserRouter,
   createRoutesFromElements,
@@ -10,6 +11,7 @@ import { TodoRoute, todosLoader } from "./todos/[todoId]";
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Root />}>
+      <Route index element={<Navigate to="/todos" />} />
       <Route path="todos" element={<Todos />}>
         <Route path=":todoId" element={<TodoRoute />} loader={todosLoader} />
       </Route>
