@@ -1,6 +1,5 @@
 import { atom, useAtom } from "jotai";
 import _ from "lodash";
-import { useCallback } from "react";
 import { z } from "zod";
 
 const stateFilterSchema = z.enum(["all", "finished", "active"]);
